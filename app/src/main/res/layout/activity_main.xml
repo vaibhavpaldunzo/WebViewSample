@@ -6,13 +6,84 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+   <LinearLayout
+       android:id="@+id/buttonContainer"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       android:gravity="center_horizontal">
+       <TextView
+           android:id="@+id/locationTv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Request Location"
+           android:padding="16dp"
+           android:textSize="16sp"
+           android:textColor="#000000"
+           android:background="@color/colorAccent" />
+
+       <TextView
+           android:id="@+id/contactTv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Open Contact"
+           android:padding="16dp"
+           android:textSize="16sp"
+           android:textColor="#000000"
+           android:layout_marginTop="8dp"
+           android:background="@color/colorAccent" />
+
+       <TextView
+           android:id="@+id/cameraTv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Request Camera"
+           android:padding="16dp"
+           android:textSize="16sp"
+           android:textColor="#000000"
+           android:layout_marginTop="8dp"
+           android:background="@color/colorAccent" />
+
+       <TextView
+           android:id="@+id/galleryTv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Open Gallery"
+           android:padding="16dp"
+           android:textSize="16sp"
+           android:textColor="#000000"
+           android:layout_marginTop="8dp"
+           android:background="@color/colorAccent" />
+
+       <EditText
+           android:id="@+id/editText"
+           android:layout_width="match_parent"
+           android:layout_marginStart="8dp"
+           android:layout_marginEnd="8dp"
+           android:layout_height="wrap_content"
+           android:textSize="16sp"
+           android:text="file:///android_asset/index.html"
+           />
+
+       <TextView
+           android:id="@+id/webviewTv"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Open WebView"
+           android:padding="16dp"
+           android:textSize="16sp"
+           android:textColor="#000000"
+           android:layout_marginTop="8dp"
+           android:background="@color/colorAccent" />
+
+       <ImageView
+           android:id="@+id/imageView"
+           android:layout_width="match_parent"
+           android:layout_height="300dp"
+           android:layout_marginTop="8dp"/>
+   </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
