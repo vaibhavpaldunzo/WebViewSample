@@ -9,10 +9,7 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
+import android.os.*
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -44,6 +41,7 @@ class WebViewActivity : AppCompatActivity() {
     var mContactCallback: String? = null
     var photoURI: Uri? = null
     lateinit var myWebView: WebView
+    val delay by lazy { intent.getIntExtra("DELAY", 30) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +77,7 @@ class WebViewActivity : AppCompatActivity() {
 
         }
         myWebView.loadUrl(intent.getStringExtra("URL"))
-        myWebView.addJavascriptInterface(WebAppInterface(this, myWebView), "OnboardingInterface")
+        myWebView.addJavascriptInterface(WebAppInterface(this, myWebView, delay), "OnboardingInterface")
     }
 
     override fun onRequestPermissionsResult(
@@ -399,7 +397,7 @@ class WebViewActivity : AppCompatActivity() {
 }
 
 /** Instantiate the interface and set the context  */
-class WebAppInterface(private val mContext: Context, private val mWebView: WebView) {
+class WebAppInterface(private val mContext: Context, private val mWebView: WebView, private val delay: Int) {
 
     /** Show a toast from the web page  */
     @JavascriptInterface
@@ -458,23 +456,26 @@ class WebAppInterface(private val mContext: Context, private val mWebView: WebVi
                 mContext.openPhoneBook()
             }
             "GET_JWT" -> {
-                mWebView?.post {
+                mWebView.post {
                     val response = ResponseObjectJwt(
                         response_type = "GET_JWT",
-                        data = Jwt(jwt_token = "jwtToken"),
+                        data = Jwt(jwt_token = "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiN2I1MjY4OGMtMzc5YS00MzRiLThkY2EtOGEwNWU2Y2UxMWVkIiwiaXNzIjoiZXNwcmVzc29AZHVuem8uaW4iLCJuYW1lIjoiVmFpYmhhdiBQYWwiLCJleHAiOjE2MDA4NTM5MTMsImlhdCI6MTYwMDMzNTUxMywic2VjcmV0X2tleSI6Ijk5OTgzYjRjLWE0Y2YtNDI1NS05MGVhLTM3ZDgwZDg5NDIzOSIsImQiOnsic2VjcmV0X2tleSI6Ijk5OTgzYjRjLWE0Y2YtNDI1NS05MGVhLTM3ZDgwZDg5NDIzOSIsInVpZCI6IjdiNTI2ODhjLTM3OWEtNDM0Yi04ZGNhLThhMDVlNmNlMTFlZCJ9fQ.MBY7r_iRovuAWDXBWIbaY7bWReyUYfxDFwkxoZk8kD8"),
                         web_identifier = mContext.currentWebIdentifier
                     )
                     mWebView.evaluateJavascript("javascript:${WebViewActivity.WEBVIEW_CALLBACK}('${Gson().toJson(response)}')", null)
                 }
             }
             "REFRESH_JWT" -> {
-                mWebView?.post {
+                AsyncTask.execute {
+                    Thread.sleep(delay * 1000L)
                     val response = ResponseObjectJwt(
                         response_type = "GET_JWT",
-                        data = Jwt(jwt_token = "refreshedJwtToken"),
+                        data = Jwt(jwt_token = "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiN2I1MjY4OGMtMzc5YS00MzRiLThkY2EtOGEwNWU2Y2UxMWVkIiwiaXNzIjoiZXNwcmVzc29AZHVuem8uaW4iLCJuYW1lIjoiVmFpYmhhdiBQYWwiLCJleHAiOjE2MDA4NTI4MDUsImlhdCI6MTYwMDMzNDQwNSwic2VjcmV0X2tleSI6ImVlMWFkMDI4LTcyMjctNDNjMy04MzAwLTYwMmU5Y2E2N2FiZSIsImQiOnsic2VjcmV0X2tleSI6ImVlMWFkMDI4LTcyMjctNDNjMy04MzAwLTYwMmU5Y2E2N2FiZSIsInVpZCI6IjdiNTI2ODhjLTM3OWEtNDM0Yi04ZGNhLThhMDVlNmNlMTFlZCJ9fQ.NgKWvUNFrrUJEw5sFJBPI01mQva3yDUf7WI9fu5Pvwo"),
                         web_identifier = mContext.currentWebIdentifier
                     )
-                    mWebView.evaluateJavascript("javascript:${WebViewActivity.WEBVIEW_CALLBACK}('${Gson().toJson(response)}')", null)
+                    mWebView.post {
+                        mWebView.evaluateJavascript("javascript:${WebViewActivity.WEBVIEW_CALLBACK}('${Gson().toJson(response)}')", null)
+                    }
                 }
             }
             "SEND_EVENT" -> {

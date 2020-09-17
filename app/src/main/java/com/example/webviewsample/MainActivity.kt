@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 import java.io.IOException
 import java.net.URL
@@ -78,13 +79,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         webviewTv.setOnClickListener {
-            startWebviewActivity(editText.text.toString())
+            startWebviewActivity(editText.text.toString(), delayEditText.text.toString().toInt())
         }
     }
 
-    fun startWebviewActivity(url: String) {
+    fun startWebviewActivity(url: String, delay: Int) {
         val intent = Intent(this, WebViewActivity::class.java)
         intent.putExtra("URL", url)
+        intent.putExtra("DELAY", delay)
         startActivity(intent)
     }
 
